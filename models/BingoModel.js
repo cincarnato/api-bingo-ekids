@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const BingoSchema = new mongoose.Schema({
     name: { type: String },
     code: { type: String },
-    items: [{  type: String}],
+    items: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item',
+    }],
+    cardQtyItems: {type: Number, default: 8}
 
 });
 

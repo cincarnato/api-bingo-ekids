@@ -1,6 +1,7 @@
 const {findBingo, createBingo, raffleItem} = require('./services/BingoService')
 const {playersByBingo, joinBingo, pickItem} = require('./services/PlayerService')
 const {fetchItems} = require('./services/ItemService')
+const {pubsub} = require('./PubSub')
 
 module.exports.resolvers = {
     Query: {
@@ -25,7 +26,22 @@ module.exports.resolvers = {
             return pickItem(playerId, itemId)
         },
         raffleItem: (_, {bingoId}) => {
-            return raffleItem(bingoId)
+
+            return new Promise( (resolve, reject) => {
+                raffleItem(bingoId).then(r => {
+                    pubsub.publish('itemAdded', r);
+                    resolve(r)
+                }).catch(err => reject(err))
+            })
+            
         }
-    }
+    },
+    Subscription: {
+        itemAdded: {
+            resolve: (payload) => {
+                return payload; //Manipulate at you wish
+            },
+            subscribe: () => pubsub.asyncIterator('itemAdded')
+        }
+    },
 };

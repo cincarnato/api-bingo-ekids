@@ -7,12 +7,13 @@ type Bingo{
     id: ID!
     name: String
     code: String
+    cardQtyItems: Int
     items: [Item]
 }
 
 type Player{
     id: ID!
-    bingo: ID
+    bingo: Bingo!
     name: String
     card: [Item]
 }
@@ -22,11 +23,6 @@ type Item{
     name: String
     img: String
     snd: String
-}
-
-input BingoInput{
-    name: String
-    code: String
 }
 
 
@@ -44,12 +40,17 @@ type Query{
 
 
 type Mutation{
-    createBingo(input:BingoInput): Bingo
+    createBingo(name:String!): Bingo!
 
-    joinBingo(playerName: String, code:String!): Bingo
+    joinBingo(playerName: String!, code:String!): Player!
 
-    pickItem(playerId: ID, itemId:ID!): Item
+    pickItem(playerId: ID!, itemId:ID!): Item
 
     raffleItem(bingoId:ID!): Item
 }
+
+type Subscription {
+  itemAdded(bingoId: ID!): Item
+}
+
 `

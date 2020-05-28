@@ -1,6 +1,8 @@
 const {Player}  = require( '../models/PlayerModel')
+const {findBingoByCode}  = require( './BingoService')
+const {findItem}  = require( './ItemService')
 
-module.exports.playersByBingo = function (bingoId) {
+const playersByBingo = function (bingoId) {
     return new Promise((resolve, reject) => {
         Player.find({bingo: bingoId}).exec((err, res) => (
             err ? reject(err) : resolve(res)
@@ -9,11 +11,20 @@ module.exports.playersByBingo = function (bingoId) {
 }
 
 
-module.exports.joinBingo = async function (playerName, bingoId) {
+const findPlayer = function(id) {
+    return new Promise((resolve, reject) => {
+        Player.findOne({_id: id}).populate('bingo').populate('card').exec((err, res) => (
+            err ? reject(err) : resolve(res)
+        ));
+    })
+}
+
+const joinBingo = async function (playerName, code) {
+    let bingo = await findBingoByCode(code)
 
     const doc = new Player({
         name: playerName,
-        bingo: bingoId,
+        bingo: bingo._id,
         card: []
     })
 
@@ -24,29 +35,45 @@ module.exports.joinBingo = async function (playerName, bingoId) {
             if (error) {
                 rejects(error)
             }
+            doc.bingo = bingo
             resolve(doc)
         }))
     })
 }
 
 
-module.exports.pickItem = async function (playerId, itemId) {
+const pickItem = function (playerId, itemId) {
+   
 
-    return new Promise((resolve, rejects) => {
-        person.findOneAndUpdate({_id: playerId},
-            {
-                $addToSet: { card: itemId }
+    return new Promise(async (resolve, rejects) => {
+        let item = await findItem(itemId)
+        let player = await findPlayer(playerId)
+
+        if(!player.card.some(i => i._id.equals(item._id)) && player.card.length < player.bingo.cardQtyItems){
+            Player.findOneAndUpdate({_id: playerId},
+                {
+                    $addToSet: { card: itemId }
+        
+                },
+                {new: true, runValidators: true, context: 'query'},
+                (error, doc) => {
+                    if (error) {
+                        rejects(error)
+                    }
     
-            },
-            {new: true, runValidators: true, context: 'query'},
-            (error, doc) => {
-                if (error) {
-                    rejects(error)
-                }
+                    resolve(item)
+                })
+        }else{
+            resolve(null)
+        }
 
-                resolve(doc)
-            })
-
+            
 
     })
 }
+
+
+module.exports.pickItem = pickItem
+module.exports.joinBingo = joinBingo
+module.exports.playersByBingo = playersByBingo
+module.exports.findPlayer = findPlayer

@@ -1,16 +1,25 @@
 const {Bingo}  = require( '../models/BingoModel')
 const {fetchItems}  = require( './ItemService')
 
-module.exports.findBingo = function (id) {
+
+const findBingo = function(id) {
     return new Promise((resolve, reject) => {
-        Bingo.findOne({_id: id}).exec((err, res) => (
+        Bingo.findOne({_id: id}).populate('items').exec((err, res) => (
+            err ? reject(err) : resolve(res)
+        ));
+    })
+}
+
+const findBingoByCode = function(code) {
+    return new Promise((resolve, reject) => {
+        Bingo.findOne({code: code}).populate('items').exec((err, res) => (
             err ? reject(err) : resolve(res)
         ));
     })
 }
 
 
-module.exports.createBingo = async function (name) {
+const createBingo = async function (name) {
 
     let code = randomstring(8)
 
@@ -32,23 +41,24 @@ module.exports.createBingo = async function (name) {
 }
 
 
-module.exports.raffleItem = function (bingoId) {
+const raffleItem = function (bingoId) {
 
-   
+
     return new Promise(async (resolve, rejects) => {
         let items = await fetchItems()
         let bingo = await findBingo(bingoId)
-    
-        let itemsLeft = items.filter(item => !bingo.items.some(i => i._id == item._id))
-        
-        if(itemsLeft.length>0){
-        let randomindex = Math.floor(Math.random() * itemsLeft.length) 
-        let randomItem = itemsLeft.length[randomindex]
-    
+        let bingoItems = bingo.items
+      
 
-        Bingo.findOneAndUpdate({_id: bingoId},
+        let itemsLeft = items.filter(item => !bingoItems.some(i => i._id.equals(item._id)))
+        if(itemsLeft.length>0){
+            let randomindex = Math.floor(Math.random() * itemsLeft.length) 
+
+            let randomItem = itemsLeft[randomindex]
+
+            Bingo.findOneAndUpdate({_id: bingoId},
             {
-                $addToSet: { items: randomItem._id }
+                $addToSet: { items: randomItem}
     
             },
             {new: true, runValidators: true, context: 'query'},
@@ -57,10 +67,11 @@ module.exports.raffleItem = function (bingoId) {
                     rejects(error)
                 }
 
-                resolve(doc)
+                resolve(randomItem)
             })
 
-        }
+        }else
+        resolve(null)
     })
 
 }
@@ -75,3 +86,10 @@ function randomstring(length) {
     }
     return result;
 }
+
+
+
+module.exports.findBingo = findBingo
+module.exports.findBingoByCode = findBingoByCode
+module.exports.createBingo = createBingo
+module.exports.raffleItem = raffleItem

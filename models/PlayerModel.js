@@ -7,7 +7,10 @@ const PlayerSchema = new mongoose.Schema({
         ref: 'Bingo'
     },
     name: { type: String },
-    card: [{  type: String}]
+    card: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item',
+    }],
 });
 
 PlayerSchema.set('toJSON', { getters: true });
