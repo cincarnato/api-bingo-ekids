@@ -32,17 +32,20 @@ module.exports.createBingo = async function (name) {
 }
 
 
-module.exports.raffleItem = async function (bingoId) {
+module.exports.raffleItem = function (bingoId) {
 
-    let items = await fetchItems()
-    let bingo = await findBingo(bingoId)
-
-    let itemsLeft = items.filter(item => !bingo.items.some(i => i._id == item._id))
+   
+    return new Promise(async (resolve, rejects) => {
+        let items = await fetchItems()
+        let bingo = await findBingo(bingoId)
     
-    let randomindex = Math.floor(Math.random() * itemsLeft.length) 
-    let randomItem = itemsLeft.length[randomindex]
+        let itemsLeft = items.filter(item => !bingo.items.some(i => i._id == item._id))
+        
+        if(itemsLeft.length>0){
+        let randomindex = Math.floor(Math.random() * itemsLeft.length) 
+        let randomItem = itemsLeft.length[randomindex]
+    
 
-    return new Promise((resolve, rejects) => {
         Bingo.findOneAndUpdate({_id: bingoId},
             {
                 $addToSet: { items: randomItem._id }
@@ -57,8 +60,9 @@ module.exports.raffleItem = async function (bingoId) {
                 resolve(doc)
             })
 
-
+        }
     })
+
 }
 
 
