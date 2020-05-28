@@ -4,8 +4,16 @@ const {findItem}  = require( './ItemService')
 
 const playersByBingo = function (bingoId) {
     return new Promise((resolve, reject) => {
-        Player.find({bingo: bingoId}).exec((err, res) => (
+        Player.find({bingo: bingoId}).populate('card').exec((err, res) => (
             err ? reject(err) : resolve(res)
+        ));
+    })
+}
+
+const fetchPlayers = function () {
+    return new Promise((resolve, reject) => {
+        Player.find({}).exec((err, res) => (
+            err ?  reject(err) : resolve(res)
         ));
     })
 }
