@@ -35,7 +35,7 @@ Promise.all([
     createItem("carrot"),
     createItem("cereal"),
     createItem("bread"),
-    createItem("sausages"),
+    createItem("sausage"),
     createItem("water"),
     createItem("lemonade"),
     createItem("honey"),
