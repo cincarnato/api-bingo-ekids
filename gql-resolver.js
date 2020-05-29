@@ -50,8 +50,6 @@ module.exports.resolvers = {
             subscribe: withFilter(
             () => pubsub.asyncIterator('itemAdded'), 
             (payload, variables) => {
-                console.log("payload.bingoId", payload.bingoId)
-                console.log("variables.bingoId", variables.bingoId)
                 return payload.bingoId === variables.bingoId;
              }),
             //subscribe: () => pubsub.asyncIterator('itemAdded')

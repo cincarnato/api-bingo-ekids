@@ -51,6 +51,7 @@ const raffleItem = function (bingoId) {
       
 
         let itemsLeft = items.filter(item => !bingoItems.some(i => i._id.equals(item._id)))
+        
         if(itemsLeft.length>0){
             let randomindex = Math.floor(Math.random() * itemsLeft.length) 
 

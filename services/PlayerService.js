@@ -27,18 +27,25 @@ const findPlayer = function(id) {
     })
 }
 
-const joinBingo = async function (playerName, code) {
-    let bingo = await findBingoByCode(code)
+const joinBingo =  function (playerName, code) {
+    
 
-    const doc = new Player({
-        name: playerName,
-        bingo: bingo._id,
-        card: []
-    })
+    return new Promise(async (resolve, rejects) => {
 
-    doc.id = doc._id;
+        let bingo = await findBingoByCode(code)
+        
+        if(!bingo){
+            resolve(null)
+        }
 
-    return new Promise((resolve, rejects) => {
+        const doc = new Player({
+            name: playerName,
+            bingo: bingo._id,
+            card: []
+        })
+
+        doc.id = doc._id;
+
         doc.save((error => {
             if (error) {
                 rejects(error)

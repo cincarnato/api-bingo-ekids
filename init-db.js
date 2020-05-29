@@ -25,7 +25,23 @@ Promise.all([
     createItem("pork"),
     createItem("sandwich"),
     createItem("tomato"),
-    createItem("watermelon") 
+    createItem("watermelon"),
+    createItem("coffee"),
+    createItem("tea"),
+    createItem("cherry"),
+    createItem("milkshake"),
+    createItem("ice-cream"),
+    createItem("lettuce"),
+    createItem("carrot"),
+    createItem("cereal"),
+    createItem("bread"),
+    createItem("sausages"),
+    createItem("water"),
+    createItem("lemonade"),
+    createItem("honey"),
+    createItem("cucumber"),
+    createItem("strawberry")
+    
 ]).then(val => {
         console.log("ALL CREATE DONE")
         process.exit()
