@@ -2,6 +2,7 @@ const {findBingo, createBingo, raffleItem} = require('./services/BingoService')
 const {playersByBingo, joinBingo, pickItem} = require('./services/PlayerService')
 const {fetchItems} = require('./services/ItemService')
 const {pubsub} = require('./PubSub')
+const { withFilter } = require('graphql-subscriptions');
 
 module.exports.resolvers = {
     Query: {
@@ -29,6 +30,7 @@ module.exports.resolvers = {
 
             return new Promise( (resolve, reject) => {
                 raffleItem(bingoId).then(r => {
+                    r.bingoId = bingoId
                     pubsub.publish('itemAdded', r);
                     resolve(r)
                 }).catch(err => reject(err))
@@ -41,7 +43,14 @@ module.exports.resolvers = {
             resolve: (payload) => {
                 return payload; //Manipulate at you wish
             },
-            subscribe: () => pubsub.asyncIterator('itemAdded')
+            subscribe: withFilter(
+            () => pubsub.asyncIterator('itemAdded'), 
+            (payload, variables) => {
+                console.log("payload.bingoId", payload.bingoId)
+                console.log("variables.bingoId", variables.bingoId)
+                return payload.bingoId === variables.bingoId;
+             }),
+            //subscribe: () => pubsub.asyncIterator('itemAdded')
         }
     },
 };
