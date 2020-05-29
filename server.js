@@ -34,7 +34,7 @@ app.use(corsMiddleware)
 
 app.use('/media/items/img', express.static('media/items/img'));
 app.use('/media/items/snd', express.static('media/items/snd'));
-
+app.use('/media/assets', express.static('media/assets'));
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
