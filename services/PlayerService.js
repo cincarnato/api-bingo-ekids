@@ -36,23 +36,25 @@ const joinBingo =  function (playerName, code) {
         
         if(!bingo){
             resolve(null)
+        }else{
+            const doc = new Player({
+                name: playerName,
+                bingo: bingo._id,
+                card: []
+            })
+    
+            doc.id = doc._id;
+    
+            doc.save((error => {
+                if (error) {
+                    rejects(error)
+                }
+                doc.bingo = bingo
+                resolve(doc)
+            }))
         }
 
-        const doc = new Player({
-            name: playerName,
-            bingo: bingo._id,
-            card: []
-        })
-
-        doc.id = doc._id;
-
-        doc.save((error => {
-            if (error) {
-                rejects(error)
-            }
-            doc.bingo = bingo
-            resolve(doc)
-        }))
+       
     })
 }
 

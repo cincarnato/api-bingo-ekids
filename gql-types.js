@@ -42,7 +42,7 @@ type Query{
 type Mutation{
     createBingo(name:String!): Bingo!
 
-    joinBingo(playerName: String!, code:String!): Player!
+    joinBingo(playerName: String!, code:String!): Player
 
     pickItem(playerId: ID!, itemId:ID!): Item
 
