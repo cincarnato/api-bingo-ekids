@@ -30,8 +30,12 @@ module.exports.resolvers = {
 
             return new Promise( (resolve, reject) => {
                 raffleItem(bingoId).then(r => {
-                    r.bingoId = bingoId
-                    pubsub.publish('itemAdded', r);
+                    
+                    if(r){
+                        r.bingoId = bingoId
+                        pubsub.publish('itemAdded', r);
+                    }
+
                     resolve(r)
                 }).catch(err => reject(err))
             })
