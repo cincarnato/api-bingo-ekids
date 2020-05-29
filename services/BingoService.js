@@ -21,7 +21,7 @@ const findBingoByCode = function(code) {
 
 const createBingo = async function (name) {
 
-    let code = randomstring(8)
+    let code = randomstring(5)
 
     const doc = new Bingo({
         name,
@@ -79,7 +79,7 @@ const raffleItem = function (bingoId) {
 
 function randomstring(length) {
     let result = '';
-    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
