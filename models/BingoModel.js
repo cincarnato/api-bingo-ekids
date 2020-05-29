@@ -7,7 +7,7 @@ const BingoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Item',
     }],
-    cardQtyItems: {type: Number, default: 8}
+    cardQtyItems: {type: Number, default: 9}
 
 });
 
